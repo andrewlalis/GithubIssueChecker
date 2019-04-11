@@ -9,10 +9,10 @@ import java.util.List;
 
 public class FileUtils {
 
-    public static final String CREDENTIALS_FILE = "credentials.txt";
-    public static final String CHOICE_TOKEN = "token";
+    private static final String CREDENTIALS_FILE = "credentials.txt";
+    private static final String CHOICE_TOKEN = "token";
 
-    public static final String REPOSITORIES_FILE = "repositories.txt";
+    private static final String REPOSITORIES_FILE = "repositories.txt";
 
     /**
      * @return A credentials object that can be used to log into Github, or null if it could not be obtained.

@@ -16,7 +16,7 @@ public class IssueChecker implements Runnable {
     private GHOrganization organization;
     private String repositoryName;
 
-    public IssueChecker(GHOrganization organization, String repositoryName) {
+    IssueChecker(GHOrganization organization, String repositoryName) {
         this.organization = organization;
         this.repositoryName = repositoryName;
     }

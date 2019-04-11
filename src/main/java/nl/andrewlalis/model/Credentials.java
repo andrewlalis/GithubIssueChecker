@@ -41,7 +41,6 @@ public class Credentials {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
         if (this.isOAuth()) {
             return "token: " + this.token;
         } else {
