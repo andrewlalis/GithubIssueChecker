@@ -28,7 +28,7 @@ public class IssueChecker implements Runnable {
             List<GHIssue> issues = repository.getIssues(GHIssueState.OPEN);
 
             for (GHIssue issue : issues) {
-                System.out.println(repository.getUrl() + " -> " + issue.getTitle() + "\n\t" + issue.getBody());
+                System.out.println(repository.getUrl() + " -> " + issue.getTitle() + "\n" + issue.getBody());
             }
 
         } catch (IOException e) {
