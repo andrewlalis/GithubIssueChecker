@@ -32,7 +32,7 @@ public class Main {
         RepositoriesList repositories = FileUtils.readRepositoryNames();
 
         if (repositories == null) {
-            System.err.println("Could not obtain the list of repositories.");
+            System.err.println("Could not obtain the list of repositories from repositories.txt");
             System.exit(-1);
         }
 

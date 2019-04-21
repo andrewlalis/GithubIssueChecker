@@ -25,6 +25,11 @@ public class IssueChecker implements Runnable {
     public void run() {
         try {
             GHRepository repository = this.organization.getRepository(this.repositoryName);
+            if (repository == null) {
+                System.err.println("Could not get repository " + this.repositoryName + " from organization " + this.organization.getName() + ". Consider removing it from repositories.txt.");
+                return;
+            }
+
             List<GHIssue> issues = repository.getIssues(GHIssueState.OPEN);
 
             for (GHIssue issue : issues) {
