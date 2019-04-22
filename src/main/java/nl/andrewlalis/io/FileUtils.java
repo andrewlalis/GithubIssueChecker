@@ -88,8 +88,15 @@ public class FileUtils {
                 String line = reader.readLine();
                 String organizationName = line.split(":")[1].trim();
                 List<String> repositoryNames = new ArrayList<>();
+                int lineNumber = 2;
                 while ((line = reader.readLine()) != null) {
-                    repositoryNames.add(line.trim());
+                    String cleanedName = line.trim();
+                    if (!cleanedName.isEmpty()) {
+                        repositoryNames.add(cleanedName);
+                    } else {
+                        System.err.println("Line " + lineNumber + " is empty string.");
+                    }
+                    lineNumber++;
                 }
 
                 String[] namesArray = new String[repositoryNames.size()];
