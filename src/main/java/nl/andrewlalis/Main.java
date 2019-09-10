@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The main program entry point for this application.
@@ -21,8 +23,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Credentials credentials = FileUtils.readCredentials();
-        System.out.println("Credentials: " + credentials);
-
         if (credentials == null) {
             System.err.println("Could not obtain credentials.");
             System.exit(-1);
@@ -35,38 +35,54 @@ public class Main {
             github = GitHub.connectUsingPassword(credentials.getUsername(), credentials.getPassword());
         }
 
-        // Read the list of repositories.
         RepositoriesList repositories = FileUtils.readRepositoryNames();
-
         if (repositories == null) {
             System.err.println("Could not obtain the list of repositories from repositories.txt");
             System.exit(-1);
         }
 
-        GHOrganization org = github.getOrganization(repositories.getOrganizationName());
-        List<RepositoryIssueCheckerThread> repositoryIssueCheckerThreads = new ArrayList<>();
+        System.out.println("Fetching issues from all repositories...");
+        long start = System.currentTimeMillis();
+        List<RepositoryIssueCheckerThread> finishedThreads = fetchIssues(repositories, github);
+        long elapsed = System.currentTimeMillis() - start;
+        System.out.println("Done! Finished in " + elapsed + "ms.");
+        showResults(finishedThreads);
+    }
 
-        for (String repositoryName : repositories.getRepositoryNames()) {
-            RepositoryIssueCheckerThread checker = new RepositoryIssueCheckerThread(org, repositoryName);
-            repositoryIssueCheckerThreads.add(checker);
-            checker.start();
-        }
+    /**
+     * Generates some threads which each fetches issues from one repository.
+     * @param repositoriesList The repositories list which contains all the repository names and organization name.
+     * @param github The Github API interaction object.
+     * @return The list of threads after they've all completed, so that data can be extracted from them.
+     */
+    private static List<RepositoryIssueCheckerThread> fetchIssues(RepositoriesList repositoriesList, GitHub github) {
+        try {
+            GHOrganization org = github.getOrganization(repositoriesList.getOrganizationName());
+            List<RepositoryIssueCheckerThread> repositoryIssueCheckerThreads = new ArrayList<>();
 
-        // Wait for all checkers to finish.
-        for (RepositoryIssueCheckerThread checkerThread : repositoryIssueCheckerThreads) {
-            try {
-                checkerThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            for (String repositoryName : repositoriesList.getRepositoryNames()) {
+                RepositoryIssueCheckerThread checker = new RepositoryIssueCheckerThread(org, repositoryName);
+                repositoryIssueCheckerThreads.add(checker);
+                checker.start();
             }
+
+            // Wait for all checkers to finish.
+            for (RepositoryIssueCheckerThread checkerThread : repositoryIssueCheckerThreads) {
+                try {
+                    checkerThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return repositoryIssueCheckerThreads;
+        } catch (IOException exception) {
+            return new ArrayList<>();
         }
-
-        showResults(repositoryIssueCheckerThreads);
-
     }
 
     private static void showResults(List<RepositoryIssueCheckerThread> checkerThreads) {
-        System.out.println("Done checking for issues. Would you like to see pull requests[1], issues[2], or both[3]?");
+        System.out.println("Would you like to see pull requests[1], issues[2], or both[3]?");
         int choice = 3;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             try {
@@ -97,7 +113,6 @@ public class Main {
         for (RepositoryIssueCheckerThread thread : checkerThreads) {
             for (Issue issue : thread.getIssues(filterType)) {
                 System.out.println(issue.toString());
-                System.out.println();
             }
         }
     }
