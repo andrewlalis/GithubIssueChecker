@@ -37,6 +37,7 @@
                             <mainClass>nl.andrewlalis.Main</mainClass>
                         </manifest>
                     </archive>
+                    <outputDirectory>jars</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
