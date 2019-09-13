@@ -34,6 +34,13 @@ public class TrackedOrganization implements Serializable {
 	}
 
 	/**
+	 * @return The list of repositories that are tracked in this organization.
+	 */
+	public Set<TrackedRepository> getRepositories() {
+		return this.repositories;
+	}
+
+	/**
 	 * Checks if the given object is equal to this one.
 	 * @param obj The object to compare to this one.
 	 * @return True if the other object is the same TrackedOrganization, or false otherwise.
