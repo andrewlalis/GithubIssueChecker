@@ -15,4 +15,9 @@ public abstract class Credentials implements Serializable {
 	 * @throws IOException If authentication failed, or the API could not be reached.
 	 */
 	public abstract GitHub getAuthenticatedGithubApi() throws IOException;
+
+	/**
+	 * @return The string representation of these credentials.
+	 */
+	public abstract String toString();
 }

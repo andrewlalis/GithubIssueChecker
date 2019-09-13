@@ -53,4 +53,20 @@ public class TrackedOrganization implements Serializable {
 		}
 		return false;
 	}
+
+	/**
+	 * @return A string representation of this tracked organization.
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(this.name);
+		if (this.description != null) {
+			sb.append(", ").append(this.description);
+		}
+		sb.append("\nRepositories (").append(this.repositories.size()).append("):\n");
+		for (TrackedRepository repository : this.getRepositories()) {
+			sb.append(repository.toString());
+		}
+		return sb.toString();
+	}
 }

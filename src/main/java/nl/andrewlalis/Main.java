@@ -5,6 +5,8 @@ import nl.andrewlalis.model.Credentials;
 import nl.andrewlalis.model.Issue;
 import nl.andrewlalis.model.IssueType;
 import nl.andrewlalis.model.RepositoriesListFile;
+import nl.andrewlalis.model.storage.TrackingModel;
+import nl.andrewlalis.model.storage.UsernameCredentials;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GitHub;
 
@@ -12,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -20,6 +23,8 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        testTrackingModel();
+
         Credentials credentials = FileUtils.readCredentials();
         if (credentials == null) {
             System.err.println("Could not obtain credentials.");
@@ -45,6 +50,12 @@ public class Main {
         long elapsed = System.currentTimeMillis() - start;
         System.out.println("Done! Finished in " + elapsed + "ms.");
         showResults(finishedThreads);
+    }
+
+    private static void testTrackingModel() {
+        TrackingModel model = new TrackingModel(new UsernameCredentials("andrewlalis", "scrubstub43"), new HashSet<>());
+        model.save();
+        System.out.println(model);
     }
 
     /**
