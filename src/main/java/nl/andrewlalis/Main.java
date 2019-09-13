@@ -4,7 +4,7 @@ import nl.andrewlalis.io.FileUtils;
 import nl.andrewlalis.model.Credentials;
 import nl.andrewlalis.model.Issue;
 import nl.andrewlalis.model.IssueType;
-import nl.andrewlalis.model.RepositoriesList;
+import nl.andrewlalis.model.RepositoriesListFile;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GitHub;
 
@@ -33,7 +33,7 @@ public class Main {
             github = GitHub.connectUsingPassword(credentials.getUsername(), credentials.getPassword());
         }
 
-        RepositoriesList repositories = FileUtils.readRepositoryNames();
+        RepositoriesListFile repositories = FileUtils.readRepositoryNames();
         if (repositories == null) {
             System.err.println("Could not obtain the list of repositories from repositories.txt");
             System.exit(-1);
@@ -49,16 +49,16 @@ public class Main {
 
     /**
      * Generates some threads which each fetches issues from one repository.
-     * @param repositoriesList The repositories list which contains all the repository names and organization name.
+     * @param repositoriesListFile The repositories list which contains all the repository names and organization name.
      * @param github The Github API interaction object.
      * @return The list of threads after they've all completed, so that data can be extracted from them.
      */
-    private static List<RepositoryIssueCheckerThread> fetchIssues(RepositoriesList repositoriesList, GitHub github) {
+    private static List<RepositoryIssueCheckerThread> fetchIssues(RepositoriesListFile repositoriesListFile, GitHub github) {
         try {
-            GHOrganization org = github.getOrganization(repositoriesList.getOrganizationName());
+            GHOrganization org = github.getOrganization(repositoriesListFile.getOrganizationName());
             List<RepositoryIssueCheckerThread> repositoryIssueCheckerThreads = new ArrayList<>();
 
-            for (String repositoryName : repositoriesList.getRepositoryNames()) {
+            for (String repositoryName : repositoriesListFile.getRepositoryNames()) {
                 RepositoryIssueCheckerThread checker = new RepositoryIssueCheckerThread(org, repositoryName);
                 repositoryIssueCheckerThreads.add(checker);
                 checker.start();
