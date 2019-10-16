@@ -1,5 +1,7 @@
 .idea
 *.iml
+target/*
+*.jar
 
 #private auto-generated files that should not be shared.
 credentials.txt

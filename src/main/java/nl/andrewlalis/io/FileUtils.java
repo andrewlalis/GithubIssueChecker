@@ -1,7 +1,7 @@
 package nl.andrewlalis.io;
 
 import nl.andrewlalis.model.Credentials;
-import nl.andrewlalis.model.RepositoriesList;
+import nl.andrewlalis.model.RepositoriesListFile;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class FileUtils {
         }
     }
 
-    public static RepositoriesList readRepositoryNames() {
+    public static RepositoriesListFile readRepositoryNames() {
         File f = new File(REPOSITORIES_FILE);
 
         if (f.exists() && f.isFile()) {
@@ -102,7 +102,7 @@ public class FileUtils {
                 String[] namesArray = new String[repositoryNames.size()];
                 repositoryNames.toArray(namesArray);
 
-                return new RepositoriesList(organizationName, namesArray);
+                return new RepositoriesListFile(organizationName, namesArray);
             } catch (FileNotFoundException e) {
                 System.err.println("File not found: " + f.getAbsolutePath());
                 return null;
@@ -135,7 +135,7 @@ public class FileUtils {
 
                 writer.close();
 
-                return new RepositoriesList(organizationName, repositoryNames);
+                return new RepositoriesListFile(organizationName, repositoryNames);
             } catch (IOException e) {
                 System.err.println("Could not read from input.");
                 return null;
